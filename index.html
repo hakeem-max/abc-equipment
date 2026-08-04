@@ -77,9 +77,27 @@ td.mono{font-family:"Courier New",Courier,monospace;letter-spacing:.03em;font-we
   <h1>Inspection, measuring and test equipment</h1>
   Every instrument below carries a QR label on the equipment itself. Scan it to see the
   live calibration status and the certificate. Status as at
-  04 Aug 2026.
+  <span id="asat">04 Aug 2026</span>.
 </div>
-<div class="list"><a href="ABC-EQ-001/"><span class="dot" style="background:#14713A"></span><span class="nm"><b>Automatic Level</b><span>ABC-EQ-001</span></span><span class="st" style="color:#14713A">IN CALIBRATION</span></a></div>
+<div class="list"><a href="ABC-EQ-001/" class="row" data-due="2027-07-28" data-withdrawn="0"><span class="dot" style="background:#14713A"></span><span class="nm"><b>Automatic Level</b><span>ABC-EQ-001</span></span><span class="st" style="color:#14713A">IN CALIBRATION</span></a></div>
+<script>
+(function(){
+  var now=new Date(); now.setHours(0,0,0,0);
+  var a=document.getElementById('asat');
+  if(a) a.textContent=now.toLocaleDateString('en-GB',
+    {day:'2-digit',month:'short',year:'numeric'});
+  document.querySelectorAll('.row').forEach(function(el){
+    var days=Math.round((new Date(el.dataset.due+'T00:00:00')-now)/86400000);
+    var label,colour;
+    if(el.dataset.withdrawn==='1'){label='WITHDRAWN';colour='#5F5E5A';}
+    else if(days<0){label='OUT OF CALIBRATION';colour='#C0141B';}
+    else if(days<=30){label='DUE SOON';colour='#A9640B';}
+    else{label='IN CALIBRATION';colour='#14713A';}
+    el.querySelector('.dot').style.background=colour;
+    var st=el.querySelector('.st'); st.style.color=colour; st.textContent=label;
+  });
+})();
+</script>
 <div class="foot">
   Al Bashouq Trading &middot; Construction of Site Office / Camp Facility, Marmul,
   Sultanate of Oman.<br>

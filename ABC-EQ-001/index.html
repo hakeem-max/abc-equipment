@@ -73,10 +73,11 @@ td.mono{font-family:"Courier New",Courier,monospace;letter-spacing:.03em;font-we
   <img src="../assets/abc_logo.png" alt="Al Bashouq Trading">
   <div class="org">Equipment Calibration Status</div>
 </div>
-<div class="band" style="background:#14713A">
-  <div class="eyebrow">Status as at 04 Aug 2026</div>
-  <div class="verdict">IN CALIBRATION</div>
-  <div class="detail">Valid for a further 358 days.</div>
+<div class="band" id="band" style="background:#14713A"
+     data-due="2027-07-28" data-withdrawn="0">
+  <div class="eyebrow" id="asat">Status as at 04 Aug 2026</div>
+  <div class="verdict" id="verdict">IN CALIBRATION</div>
+  <div class="detail" id="detail">Valid for a further 358 days.</div>
 </div>
 <div class="ident">
   <div class="assetid">ABC-EQ-001</div>
@@ -96,4 +97,35 @@ td.mono{font-family:"Courier New",Courier,monospace;letter-spacing:.03em;font-we
   Maintained under the project QA/QC Plan, register of inspection, measuring and test
   equipment. <a href="../" style="color:#1F5FA5">All equipment</a>
 </div>
-</div></body></html>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('band');
+  if(!b) return;
+  var due=new Date(b.dataset.due+'T00:00:00');
+  var now=new Date(); now.setHours(0,0,0,0);
+  var days=Math.round((due-now)/86400000);
+  var v=document.getElementById('verdict'), d=document.getElementById('detail'),
+      a=document.getElementById('asat');
+  var label,colour,detail;
+  if(b.dataset.withdrawn==='1'){
+    label='WITHDRAWN'; colour='#5F5E5A';
+    detail='This instrument is withdrawn from service and shall not be used.';
+  }else if(days<0){
+    label='OUT OF CALIBRATION'; colour='#C0141B';
+    detail='Calibration expired '+Math.abs(days)+' days ago. Do not use.';
+  }else if(days<=30){
+    label='DUE SOON'; colour='#A9640B';
+    detail='Calibration due in '+days+' days.';
+  }else{
+    label='IN CALIBRATION'; colour='#14713A';
+    detail='Valid for a further '+days+' days.';
+  }
+  b.style.background=colour; v.textContent=label; d.textContent=detail;
+  a.textContent='Status as at '+now.toLocaleDateString('en-GB',
+    {day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+  var m=document.querySelector('meta[name=theme-color]');
+  if(m) m.setAttribute('content',colour);
+})();
+</script>
+</body></html>
